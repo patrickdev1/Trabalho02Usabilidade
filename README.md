@@ -1,14 +1,16 @@
 # Bairro Sem Barreiras
 
-Jogo 2D em Python e **PyGame**, desenvolvido para a atividade A3 de Usabilidade, Desenvolvimento Web, Mobile e Jogos. Você é Alex, uma pessoa em cadeira de rodas que participa de um mutirão comunitário. Instale rampas, abra caminhos permanentes e entregue quatro cestas aos moradores.
+Um jogo sobre acessibilidade e vida em comunidade, feito em Python com PyGame.
 
-## Executar no Windows
+É sábado de mutirão. Alex precisa levar cestas aos vizinhos, mas os caminhos do bairro têm barreiras. Para chegar a todos, é preciso instalar rampas, organizar a mochila e voltar à barraca para buscar suprimentos.
 
-**Neste computador:** dê dois cliques em `JOGAR.bat`. O ambiente Python e o PyGame já foram preparados na pasta superior (`../.venv`). Mantenha essa pasta para usar o ambiente preparado.
+![O bairro durante a partida](previa-jogo.png)
 
-**Em outro computador:** instale Python 3.12 (marque **Add Python to PATH**) e execute `JOGAR.bat`. Na primeira execução, o arquivo cria um ambiente `.venv` local e instala o PyGame; é necessária internet somente para instalar. Depois o jogo funciona offline. Nenhuma imagem, fonte externa ou conta é necessária.
+## Jogar
 
-Alternativa pelo PowerShell, dentro da pasta do jogo:
+No Windows, abra **JOGAR.bat**. É necessário ter Python 3.12 instalado; marque **Add Python to PATH** durante a instalação. O iniciador instala o PyGame na primeira execução. Depois disso, o jogo funciona offline.
+
+Para instalar e executar pelo terminal:
 
 ```powershell
 py -3 -m venv .venv
@@ -16,77 +18,66 @@ py -3 -m venv .venv
 .\.venv\Scripts\python.exe main.py
 ```
 
-Para rodar usando o ambiente já preparado neste computador:
+No computador em que o projeto foi preparado, o iniciador também reconhece o ambiente `../.venv`. Não é preciso reinstalar.
 
-```powershell
-..\.venv\Scripts\python.exe main.py
-```
+## Controles
 
-## Controles e regras
-
-| Controle | Ação |
+| Tecla | Ação |
 |---|---|
-| Enter no menu | Mutirão com duração de 3 minutos |
-| T no menu | Explorar sem limite de tempo |
-| WASD / setas | Mover Alex |
-| E / espaço | Interagir com o ponto mais próximo |
-| P / Esc durante o jogo | Pausar / continuar |
-| M | Desligar / ligar som |
-| R no resultado | Reiniciar no mesmo modo |
-| Esc no resultado | Voltar ao menu |
+| Enter | Iniciar um mutirão de 3 minutos |
+| T no menu | Passear sem limite de tempo |
+| WASD ou setas | Mover Alex |
+| E ou espaço | Instalar rampa, entregar cesta ou reabastecer |
+| P ou Esc | Pausar e continuar |
+| M | Ligar ou desligar o som |
+| R no resultado | Jogar novamente |
 
-Os botões também funcionam com mouse. A janela pode ser redimensionada e preserva a proporção. Perder o foco pausa a partida. O feedback visual funciona mesmo sem dispositivo de áudio.
+Os botões também aceitam mouse. A janela pode ser redimensionada; sair dela pausa o jogo automaticamente.
 
-Você começa na BASE com **duas cestas e um kit de rampa**. A mochila comporta apenas essas quantidades. A BASE repõe os itens sem limite. Aproxime-se de uma passagem amarela (A ou B) e pressione E para instalar a rampa. As passagens verdes permanecem abertas. Árvores e passagens sem rampa bloqueiam o movimento. Aproxime-se das casas numeradas e pressione E para entregar uma cesta. Cada morador só recebe uma vez. Vença atendendo os quatro moradores e abrindo as duas passagens antes do tempo acabar. O modo livre tem os mesmos objetivos, sem derrota por tempo.
+## Objetivo
 
-**Rota para a demonstração:** BASE → passagem A → Lia → Seu Davi → BASE (reabasteça com E) → passagem B → Dona Rosa → Ravi. A mensagem contextual indica quando E pode ser utilizado.
+Abra as duas passagens e atenda os quatro moradores. A mochila comporta **duas cestas e um kit de rampa**. Na barraca da praça, pressione E para repor os itens. As rampas permanecem instaladas e passam a ser usadas pelos vizinhos.
 
-## Propósito e game design
+Uma rota possível é: barraca → passagem A → Lia → Seu Davi → barraca → passagem B → Dona Rosa → Ravi. O modo livre permite conhecer o mapa sem cronômetro.
 
-- **Quem é impactado:** o público jogador, especialmente estudantes e pessoas que planejam ou usam espaços comunitários. Os personagens representam pessoas com necessidades diversas de mobilidade.
-- **Problema:** barreiras urbanas que restringem circulação, autonomia e participação comunitária.
-- **Contribuição das ações:** uma passagem inicialmente intransponível se torna utilizável após a intervenção. O acesso não depende apenas de uma mensagem: sem transformar o espaço, o jogador não consegue concluir as entregas.
-- **Experiência desejada:** perceber a barreira, planejar recursos e experimentar a satisfação de tornar o bairro acessível. Não se pretende simular toda a experiência de uma pessoa com deficiência.
-- **Reforço mecânico:** colisões materializam a exclusão; rampas alteram permanentemente o mapa; vizinhos usam as novas passagens; capacidade da mochila exige planejamento; diálogos relacionam a intervenção à autonomia.
-- **Impacto pretendido, não medido:** sensibilização sobre acessibilidade. Não foram realizadas avaliações com usuários ou medições de impacto real. Os kits são uma abstração lúdica, não instruções de obra ou substituto de políticas públicas.
+## O bairro
 
-## Requisitos e implementação
+A direção visual usa pixel art em escala de 2×, com casas de telhado de barro, calçadas, jardins, chafariz, varal e uma barraca comunitária. Os personagens têm aparências próprias, há animação das rodas e dos moradores, partículas nas interações e ordenação de profundidade. Os gráficos e o efeito sonoro são construídos pelo código, sem downloads durante a partida.
 
-| Requisito da atividade | Implementação |
-|---|---|
-| Python e PyGame obrigatórios | `main.py`, `requirements.txt` |
-| Problema social e narrativa | Acessibilidade urbana; Alex e quatro moradores |
-| Mecânica relevante | Movimento com colisão, rampas permanentes, coleta e entrega |
-| Game loop input → update → draw | `Game.run`, limite de 60 FPS e movimento por delta time |
-| Feedback perceptível | Mensagens, cores e números, contadores, som e vizinhos animados |
-| Apresentação até 3 minutos | `APRESENTACAO.md` |
-| Interatividade até 5 minutos | Partida de 3 minutos; rota de demonstração documentada |
-| Uso honesto de IA | `USO_DE_IA.md` |
-| Código no GitHub com acesso liberado | Repositório Git local preparado; publicação depende da conta do grupo |
+A referência de composição foi o conjunto [Tiny Town, da Kenney](https://kenney.nl/assets/tiny-town). Nenhum arquivo desse conjunto foi incorporado: os desenhos estão em `visuals.py`.
 
-## Arquitetura e testes
+![Tela inicial](previa-menu.png)
 
-`World` contém estado e regras; `Resident` representa moradores; `Game` trata eventos, renderização e áudio. A atualização para ao pausar ou encerrar. O delta time é limitado a 50 ms para impedir saltos em travamentos; nessa situação o cronômetro mede tempo simulado. Colisão é resolvida por eixo; diagonais têm velocidade normalizada. Arte e áudio são gerados por código.
+## Propósito
 
-```powershell
-..\.venv\Scripts\python.exe -m unittest -v
-```
+O problema abordado é a exclusão causada por barreiras urbanas. A mensagem aparece na ação: o jogador não alcança todos os moradores sem transformar o espaço. Ao abrir uma passagem, o benefício permanece para quem usa cadeira de rodas, bengala ou carrinho de bebê.
 
-Se instalou o ambiente dentro desta pasta, use `.\.venv\Scripts\python.exe` no comando. Os testes usam os drivers SDL de teste, sem abrir janela. Cobrem uma partida inteira com movimento real por caminhos válidos, bloqueios, limites, falta de recursos, derrota por tempo, modo livre, entregas repetidas, velocidade diagonal, renderização das telas, pausa e reinício.
+O público são estudantes e moradores interessados nos espaços da comunidade. A experiência busca combinar planejamento, percepção dos obstáculos e satisfação ao tornar os caminhos acessíveis. O impacto pretendido é a sensibilização; não foi feita pesquisa com participantes para medir esse impacto. O jogo não pretende representar toda a experiência de uma pessoa com deficiência, e os kits de rampa são uma abstração lúdica.
 
-Checklist manual: iniciar com Enter; tentar atravessar A sem rampa; instalar com E; observar passagem e vizinho; entregar duas cestas; reabastecer; abrir B; finalizar; reiniciar; testar pausa, modo livre, som e redimensionamento.
+## Código
 
-## Publicar no GitHub
+- `main.py`: regras, colisões, inventário, controles e loop `input → update → draw`.
+- `visuals.py`: cenário, personagens, animações e interface.
+- `test_game.py`: testes de regras, percurso e telas.
+- `APRESENTACAO.md`: roteiro de apresentação e demonstração.
+- `USO_DE_IA.md`: registro solicitado pela atividade.
 
-A publicação externa não foi feita: é preciso escolher a conta e o repositório de destino. Não envie `.venv` ou credenciais. Crie no GitHub um repositório **público**, vazio, chamado `bairro-sem-barreiras`. Dentro desta pasta execute, substituindo `SEU-USUARIO`:
+O loop limita a renderização a 60 FPS e usa delta time no movimento. Pausa e resultado interrompem a simulação. A velocidade diagonal é normalizada. O delta time máximo de 50 ms evita saltos em travamentos; nessas condições, o cronômetro acompanha o tempo simulado.
+
+## Testes
 
 ```powershell
-git remote add origin https://github.com/SEU-USUARIO/bairro-sem-barreiras.git
-git push -u origin main
+.\.venv\Scripts\python.exe -m unittest -v
 ```
 
-Autentique-se na sua conta quando solicitado. Verifique o link em janela anônima para confirmar que o professor consegue abrir o código. Se alterar arquivos antes de publicar, faça `git add .` e `git commit -m "Atualiza entrega A3"`. Preencha os integrantes em `APRESENTACAO.md`.
+Se estiver usando o ambiente da pasta superior, troque o executável por `..\.venv\Scripts\python.exe`.
 
-## Referência técnica
+Os testes cobrem uma partida completa até a vitória, colisões, falta de recursos, entregas duplicadas, limite de tempo, modo livre, velocidade diagonal, renderização, pausa e reinício. Os testes de janela usam drivers SDL de teste e não precisam abrir uma janela.
 
-Documentação oficial consultada: https://www.pygame.org/docs/ (eventos, desenho, teclado e relógio). Biblioteca: PyGame 2.6.1. Não há assets de terceiros incorporados.
+## Atividade A3
+
+O projeto utiliza Python e PyGame e integra problema social, narrativa, mecânica, game loop e feedback visual e sonoro. O roteiro prevê até 3 minutos de apresentação e até 5 minutos de demonstração. Os integrantes devem preencher os nomes e ensaiar a apresentação.
+
+Repositório: [patrickdev1/Trabalho02Usabilidade](https://github.com/patrickdev1/Trabalho02Usabilidade).
+
+Referência técnica: [documentação do PyGame](https://www.pygame.org/docs/).

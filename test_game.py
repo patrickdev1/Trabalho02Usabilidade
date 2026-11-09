@@ -1,4 +1,3 @@
-"""Testes das regras e smoke test das telas: python -m unittest -v."""
 import os
 os.environ['SDL_VIDEODRIVER'] = 'dummy'
 os.environ['SDL_AUDIODRIVER'] = 'dummy'
@@ -88,6 +87,26 @@ class RulesTest(unittest.TestCase):
         game.input(); self.assertEqual(game.scene,'game')
         game.world.food = 0; game.action('retry')
         self.assertEqual(game.world.food,2)
+        pygame.quit()
+
+    def test_scaled_menu_click_and_visual_effects(self):
+        game = Game()
+        game.screen = pygame.display.set_mode((840,570))
+        game.draw()
+        pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN,button=1,pos=(150,345)))
+        game.input()
+        self.assertEqual(game.scene,'game')
+        game.visuals.burst(True)
+        self.assertEqual(len(game.visuals.particles),18)
+        game.visuals.tick(.02,pygame.Vector2(3,0))
+        self.assertTrue(game.visuals.moving)
+        self.assertGreater(game.visuals.walk,0)
+        for state in ('playing','won','lost'):
+            game.world.status=state
+            game.scene='game' if state=='playing' else 'result'
+            game.draw()
+        game.action('retry')
+        self.assertFalse(game.visuals.particles)
         pygame.quit()
 
 
